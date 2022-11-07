@@ -13,13 +13,14 @@ def calculateCloud(uaw: Uaw, walls):
 
     rows =len(uaw.distances)
     cols = len(uaw.distances[0])
-    DistanceMatrix = np.zeros(shape=(rows, cols, 4 )) # Матрица расстояний в виде [x, y, z, Az]
+    DistanceMatrix = np.zeros(shape=(rows, cols, 3 )) # Матрица расстояний в виде [x, y, z, Az]
 
-    for i in range(1, rows):
-        for j in range(1, cols):
+    for i in range(rows):
+        for j in range(cols):
             DistanceMatrix[i, j] = np.array(
                 calculateDist(walls=walls, vec=uaw.distances[i][j], uaw=uaw)
             )
+    return np.asarray(DistanceMatrix)
 
 
 
@@ -33,17 +34,21 @@ def calculateDist(walls, vec, uaw:Uaw, mu=0, std=0.02):
     #     [np.sin(fi)*np.sin(gamma), np.cos(gamma), -np.cos(fi)*np.sin(gamma)],
     #     [-np.sin(fi)*np.cos(gamma), np.sin(gamma), np.cos(fi)*np.cos(gamma)]
     # ])
-    delta = 0.2
+    delta = 0.01
     for w in walls:
         leftPoint = np.array([w.x[0] - vec.shift[0], w.y[0] - vec.shift[1], w.z[0] - vec.shift[2]])
         rightPoint = np.array([w.x[-1] - vec.shift[0], w.y[-1] - vec.shift[1], w.z[-1] - vec.shift[2]])
         thirdPoint = np.array([w.x[0] - vec.shift[0], w.y[0] - vec.shift[1], w.z[-1] - vec.shift[2]])
-        fourthPoint = np.array([w.x[0] - vec.shift[0], w.y[-1] - vec.shift[1], w.z[0] - vec.shift[2]])
+        fourthPoint = np.array([w.x[0] - vec.shift[0], w.y[-1] - vec.shift[1], w.z[-1] - vec.shift[2]])
+        fifthPoint = np.array([w.x[-1] - vec.shift[0], w.y[-1] - vec.shift[1], w.z[0] - vec.shift[2]])
+        sixPoint = np.array([w.x[-1] - vec.shift[0], w.y[0] - vec.shift[1], w.z[0] - vec.shift[2]])
 
         leftPoint = A.dot(leftPoint)
         rightPoint = A.dot(rightPoint)
         thirdPoint = A.dot(thirdPoint)
         fourthPoint = A.dot(fourthPoint)
+        fifthPoint = A.dot(fifthPoint)
+        sixPoint = A.dot(sixPoint)
 
         vector1 = thirdPoint - leftPoint
         vector2 = thirdPoint - rightPoint
@@ -78,14 +83,14 @@ def calculateDist(walls, vec, uaw:Uaw, mu=0, std=0.02):
             #leftPoint = A.dot(leftPoint)
             #rightPoint = A.dot(rightPoint)
 
-            bounds = np.stack((leftPoint, rightPoint))
+            bounds = np.stack((leftPoint, rightPoint, thirdPoint, fifthPoint, fifthPoint, sixPoint))
 
             if ((x <= np.max(bounds[:, 0]) + delta and x >= np.min(bounds[:, 0]) - delta)
                     and (y <= np.max(bounds[:, 1]) + delta and y >= np.min(bounds[:, 1]) - delta) and
                     (z <= np.max(bounds[:, 2]) + delta and z >= np.min(bounds[:, 2]) - delta)):
                 xyz = np.array([x, y, z])
                 xyz = np.dot(np.linalg.inv(A), xyz) + uaw.shift
-                t.append(np.array([xyz[0], xyz[1], xyz[2], vec.Az]))
+                t.append(np.array([xyz[0], xyz[1], xyz[2]]))
                 acc.append(np.linalg.norm(xyz[:3]))
     if len(t) > 1:
         arg = np.argmin(acc)
