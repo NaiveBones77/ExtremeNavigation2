@@ -4,6 +4,7 @@ from Wall import Wall
 from Uaw import Uaw
 from Simulation import *
 import utils
+from Navigation import *
 
 w1 = Wall([-6, 6], [7, 7], [0, 8], Q=[0, 1, 0, -7])
 w2 = Wall([6, 6], [4, 7], [0, 8], Q=[1, 0, 0, -6])
@@ -16,34 +17,53 @@ w8 = Wall([-6, 8], [-3, 7], [0, 0], Q=[0, 0, 1, 0])
 
 walls = [w1, w2, w3, w4, w5, w6, w7, w8]
 
-#ax = figure.add_subplot(2, 1, 1)
+# ax = figure.add_subplot(2, 1, 1)
 
-ThetaDel = np.deg2rad(30)                                       #Угол развертки по вертикальной оси обзора сенсора
-Beta = np.deg2rad(85)                                           #Угол развертки по горизонтальной оси обзора сенсора
+ThetaDel = np.deg2rad(30)  # Угол развертки по вертикальной оси обзора сенсора
+Beta = np.deg2rad(85)  # Угол развертки по горизонтальной оси обзора сенсора
 
-Theta1 = np.deg2rad(-20)                                           #Угол тангажа БЛА в первом положении
-Az1 = np.deg2rad(0)                                              #Угол азимута БЛА в первом положении
-Gamma1 = np.deg2rad(0)                                           #Угол крена БЛА в первом положении
+Theta1 = np.deg2rad(0)  # Угол тангажа БЛА в первом положении
+Az1 = np.deg2rad(0)  # Угол азимута БЛА в первом положении
+Gamma1 = np.deg2rad(0)  # Угол крена БЛА в первом положении
 
-uaw = Uaw(1, 1, 4, Az=Az1, Beta=Beta, Theta=Theta1, ThetaDel=ThetaDel, Gamma=Gamma1)
-#uaw1 = Uaw(0.5, 0.5, 4, np.deg2rad(7), Beta=1.47, Theta=Theta, ThetaDel=ThetaDel)
+Theta2 = np.deg2rad(10)  # Угол тангажа БЛА в первом положении
+Az2 = np.deg2rad(7)  # Угол азимута БЛА в первом положении
+Gamma2 = np.deg2rad(5)  # Угол крена БЛА в первом положении
 
-t = calculateCloud(uaw, walls)
-zPoints = utils.select_z_points(t, z=4, dz=0.1)
+uaw1 = Uaw(0, 0, 4, Az=Az1, Beta=Beta, Theta=Theta1, ThetaDel=ThetaDel, Gamma=Gamma1)
+uaw2 = Uaw(0.1, -0.1, 4, Az=Az2, Beta=1.47, Theta=Theta2, ThetaDel=ThetaDel, Gamma=Gamma2)
+
+t1 = calculateCloud(uaw1, walls)
+t1_reversed = utils.reverse_points(t1, 0, 0)
+zPoints1 = utils.select_z_points(t1_reversed, 4, 0.1)
+distances1 = utils.get_distances(zPoints1, uaw1)
+
+
+t2 = calculateCloud(uaw2, walls)
+t2_reversed = utils.reverse_points(t2, 10, 5)
+zPoints2 = utils.select_z_points(t2_reversed, 4, 0.1)
+distances2 = utils.get_distances(zPoints2, uaw2)
+
+np.save('distances1.npy', distances1)
+np.save('distances2.npy', distances2)
+
+disp = calculateFunc(distances1, distances2, 1)
+
+np.save('first.npy', disp)
 
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 
-#Все точки
-x = t[:, :, 0].flatten()
-y = t[:, :, 1].flatten()
-z = t[:, :, 2].flatten()
+# Все точки
+x = t1_reversed[:, :, 0].flatten()
+y = t1_reversed[:, :, 1].flatten()
+z = t1_reversed[:, :, 2].flatten()
 
-#Точки удовлетворяющие условию высоты
-x_t =  zPoints[:, :, 0]
-y_t =  zPoints[:, :, 1]
-z_t =  zPoints[:, :, 2]
+# Точки удовлетворяющие условию высоты
+x_t = zPoints1[:, :, 0]
+y_t = zPoints1[:, :, 1]
+z_t = zPoints1[:, :, 2]
 
 for w in walls:
     ax.plot_surface(w.xx, w.y, w.zz, rstride=1, cstride=1,

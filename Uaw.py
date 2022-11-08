@@ -18,7 +18,7 @@ class Uaw:
 
 
     def __init__(self, x0, y0, z0, Az, Beta, Theta, ThetaDel, Gamma):
-        self.count = 21
+        self.count = 100
         self.matrixDist = []
         self.shift = np.array([x0, y0, z0])
         self.coords = np.array([0, 0, 0])
@@ -29,6 +29,7 @@ class Uaw:
         self.Gamma = Gamma
         self.ThetaDel = ThetaDel
         self.Az = Az
+        self.Alpha = np.linspace(-Beta, Beta, self.count)
         # Матрица поворота вокруг оси Z
         A3 = np.array([
             [np.cos(Az), np.sin(Az), 0],

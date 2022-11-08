@@ -34,7 +34,7 @@ def calculateDist(walls, vec, uaw:Uaw, mu=0, std=0.02):
     #     [np.sin(fi)*np.sin(gamma), np.cos(gamma), -np.cos(fi)*np.sin(gamma)],
     #     [-np.sin(fi)*np.cos(gamma), np.sin(gamma), np.cos(fi)*np.cos(gamma)]
     # ])
-    delta = 0.01
+    delta = 0.001
     for w in walls:
         leftPoint = np.array([w.x[0] - vec.shift[0], w.y[0] - vec.shift[1], w.z[0] - vec.shift[2]])
         rightPoint = np.array([w.x[-1] - vec.shift[0], w.y[-1] - vec.shift[1], w.z[-1] - vec.shift[2]])
@@ -77,19 +77,13 @@ def calculateDist(walls, vec, uaw:Uaw, mu=0, std=0.02):
             y = vec.coords[1] + t0 * vec.ort[1]
             z = vec.coords[2] + t0 * vec.ort[2]
 
-            #leftPoint = np.array([w.x[0] - vec.shift[0], w.y[0] - vec.shift[1], w.z[0] - vec.shift[2]])
-            #rightPoint = np.array([w.x[-1] - vec.shift[0], w.y[-1] - vec.shift[1], w.z[-1] - vec.shift[2]])
-
-            #leftPoint = A.dot(leftPoint)
-            #rightPoint = A.dot(rightPoint)
-
-            bounds = np.stack((leftPoint, rightPoint, thirdPoint, fifthPoint, fifthPoint, sixPoint))
+            bounds = np.stack((leftPoint, rightPoint, thirdPoint, fourthPoint, fifthPoint, sixPoint))
 
             if ((x <= np.max(bounds[:, 0]) + delta and x >= np.min(bounds[:, 0]) - delta)
                     and (y <= np.max(bounds[:, 1]) + delta and y >= np.min(bounds[:, 1]) - delta) and
                     (z <= np.max(bounds[:, 2]) + delta and z >= np.min(bounds[:, 2]) - delta)):
                 xyz = np.array([x, y, z])
-                xyz = np.dot(np.linalg.inv(A), xyz) + uaw.shift
+                #xyz = np.dot(np.linalg.inv(A), xyz) + uaw.shift
                 t.append(np.array([xyz[0], xyz[1], xyz[2]]))
                 acc.append(np.linalg.norm(xyz[:3]))
     if len(t) > 1:
