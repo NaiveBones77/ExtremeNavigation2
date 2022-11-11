@@ -33,7 +33,7 @@ def reverse_points(t: np.ndarray, Theta_, Gamma_):
 
     for i in range(tmp.shape[0]):
         for j in range(tmp.shape[1]):
-            tmp[i, j] = A.dot(t[i, j]) + np.array([0, 0, 4])
+            tmp[i, j] = A.dot(t[i, j]) + np.array([0, 0, 0])
 
     return tmp
 

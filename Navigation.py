@@ -70,19 +70,14 @@ def calculateFunc(t1, t2, axis, ax=None):
                         deltad = 0
 
                     func += deltad
-                func /= c
+                if (c == 0):
+                    func = float('inf')
+                else:
+                    func = func / c
                 res.append(func)
                 res.append([x, y, phi])
                 disp.append(res)
         print('End epoch{0}'.format(x))
-    x = []
-    y = []
-    for elem in disp:
-        x.append(elem[1][axis])
-        y.append(elem[0][0])
-    if (ax is not None):
-        ax.plot(x, y)
-        ax.grid()
 
     return disp
 
@@ -114,7 +109,7 @@ def calcFunc(x0, t1, t2):
         d1 = 0
 
         ind = np.argmin(np.abs(t1 - alfa1)[:, 1])
-        if (np.abs(t1[ind, 1] - alfa1) < 0.01):
+        if (np.abs(t1[ind, 1] - alfa1) < 0.08):
             d1 = t1[ind, 0]
             c += 1
         if (d1 != 0):

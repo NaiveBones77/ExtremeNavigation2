@@ -19,37 +19,37 @@ walls = [w1, w2, w3, w4, w5, w6, w7, w8]
 
 # ax = figure.add_subplot(2, 1, 1)
 
-ThetaDel = np.deg2rad(30)  # Угол развертки по вертикальной оси обзора сенсора
+ThetaDel = np.deg2rad(15)  # Угол развертки по вертикальной оси обзора сенсора
 Beta = np.deg2rad(85)  # Угол развертки по горизонтальной оси обзора сенсора
 
 Theta1 = np.deg2rad(0)  # Угол тангажа БЛА в первом положении
-Az1 = np.deg2rad(0)  # Угол азимута БЛА в первом положении
+Az1 = np.deg2rad(180)  # Угол азимута БЛА в первом положении
 Gamma1 = np.deg2rad(0)  # Угол крена БЛА в первом положении
 
-Theta2 = np.deg2rad(10)  # Угол тангажа БЛА в первом положении
-Az2 = np.deg2rad(7)  # Угол азимута БЛА в первом положении
-Gamma2 = np.deg2rad(5)  # Угол крена БЛА в первом положении
+Theta2 = np.deg2rad(8)  # Угол тангажа БЛА в первом положении
+Az2 = np.deg2rad(183)  # Угол азимута БЛА в первом положении
+Gamma2 = np.deg2rad(7)  # Угол крена БЛА в первом положении
 
 uaw1 = Uaw(0, 0, 4, Az=Az1, Beta=Beta, Theta=Theta1, ThetaDel=ThetaDel, Gamma=Gamma1)
-uaw2 = Uaw(0.1, -0.1, 4, Az=Az2, Beta=1.47, Theta=Theta2, ThetaDel=ThetaDel, Gamma=Gamma2)
+uaw2 = Uaw(0.75, -0.56, 4, Az=Az2, Beta=Beta, Theta=Theta2, ThetaDel=ThetaDel, Gamma=Gamma2)
 
 t1 = calculateCloud(uaw1, walls)
-t1_reversed = utils.reverse_points(t1, 0, 0)
-zPoints1 = utils.select_z_points(t1_reversed, 4, 0.1)
+t1_reversed = utils.reverse_points(t1, Theta1, Gamma1)
+zPoints1 = utils.select_z_points(t1_reversed, 0, 0.1)
 distances1 = utils.get_distances(zPoints1, uaw1)
 
 
 t2 = calculateCloud(uaw2, walls)
-t2_reversed = utils.reverse_points(t2, 10, 5)
-zPoints2 = utils.select_z_points(t2_reversed, 4, 0.1)
+t2_reversed = utils.reverse_points(t2, Theta2, Gamma2)
+zPoints2 = utils.select_z_points(t2_reversed, 0, 0.1)
 distances2 = utils.get_distances(zPoints2, uaw2)
 
 np.save('distances1.npy', distances1)
 np.save('distances2.npy', distances2)
 
-disp = calculateFunc(distances1, distances2, 1)
-
-np.save('first.npy', disp)
+# disp = calculateFunc(distances1, distances2, 1)
+#
+# np.save('first.npy', disp)
 
 
 fig = plt.figure()
@@ -71,4 +71,12 @@ for w in walls:
 
 ax.scatter(x, y, z, alpha=0.7)
 ax.scatter(x_t, y_t, z_t, color='red')
+
+fig2 = plt.figure()
+ax2 = fig2.add_subplot()
+ax2.plot(x_t, y_t)
+ax2.plot(zPoints2[:, :, 0], zPoints2[:, :, 1])
+plt.xlim(0,14)
+plt.ylim(-10,4)
+
 plt.show()

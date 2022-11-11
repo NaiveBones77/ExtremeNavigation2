@@ -18,7 +18,7 @@ class Uaw:
 
 
     def __init__(self, x0, y0, z0, Az, Beta, Theta, ThetaDel, Gamma):
-        self.count = 100
+        self.count = 150
         self.matrixDist = []
         self.shift = np.array([x0, y0, z0])
         self.coords = np.array([0, 0, 0])
