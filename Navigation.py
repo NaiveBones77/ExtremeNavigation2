@@ -109,7 +109,7 @@ def calcFunc(x0, t1, t2):
         d1 = 0
 
         ind = np.argmin(np.abs(t1 - alfa1)[:, 1])
-        if (np.abs(t1[ind, 1] - alfa1) < 0.08):
+        if (np.abs(t1[ind, 1] - alfa1) < 0.1):
             d1 = t1[ind, 0]
             c += 1
         if (d1 != 0):

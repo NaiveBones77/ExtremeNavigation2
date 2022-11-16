@@ -26,12 +26,12 @@ Theta1 = np.deg2rad(0)  # Угол тангажа БЛА в первом пол�
 Az1 = np.deg2rad(180)  # Угол азимута БЛА в первом положении
 Gamma1 = np.deg2rad(0)  # Угол крена БЛА в первом положении
 
-Theta2 = np.deg2rad(8)  # Угол тангажа БЛА в первом положении
-Az2 = np.deg2rad(183)  # Угол азимута БЛА в первом положении
-Gamma2 = np.deg2rad(7)  # Угол крена БЛА в первом положении
+Theta2 = np.deg2rad(0)  # Угол тангажа БЛА в первом положении
+Az2 = np.deg2rad(193)  # Угол азимута БЛА в первом положении
+Gamma2 = np.deg2rad(0)  # Угол крена БЛА в первом положении
 
 uaw1 = Uaw(0, 0, 4, Az=Az1, Beta=Beta, Theta=Theta1, ThetaDel=ThetaDel, Gamma=Gamma1)
-uaw2 = Uaw(0.75, -0.56, 4, Az=Az2, Beta=Beta, Theta=Theta2, ThetaDel=ThetaDel, Gamma=Gamma2)
+uaw2 = Uaw(1.5, -1.5, 4, Az=Az2, Beta=Beta, Theta=Theta2, ThetaDel=ThetaDel, Gamma=Gamma2)
 
 t1 = calculateCloud(uaw1, walls)
 t1_reversed = utils.reverse_points(t1, Theta1, Gamma1)
@@ -56,9 +56,9 @@ fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 
 # Все точки
-x = t1_reversed[:, :, 0].flatten()
-y = t1_reversed[:, :, 1].flatten()
-z = t1_reversed[:, :, 2].flatten()
+x = t1[:, :, 0].flatten()
+y = t1[:, :, 1].flatten()
+z = t1[:, :, 2].flatten()
 
 # Точки удовлетворяющие условию высоты
 x_t = zPoints1[:, :, 0]
