@@ -18,7 +18,7 @@ def select_z_points(t: np.ndarray, z, dz=0):
     # return t[ij_min[0], :, :]
 
 
-def reverse_points(t: np.ndarray, Theta_, Gamma_):
+def reverse_points(t: np.ndarray, Theta_, Gamma_, Az=None, shift=None):
     Theta = np.deg2rad(Theta_)
     Gamma = np.deg2rad(Gamma_)
     A2 = np.array([
@@ -34,13 +34,21 @@ def reverse_points(t: np.ndarray, Theta_, Gamma_):
     ])
     A = np.dot(A1, A2)
     A = np.linalg.inv(A)
+    if (Az is not None):
+        A3 = np.array([
+            [np.cos(Az), np.sin(Az), 0],
+            [-np.sin(Az), np.cos(Az), 0],
+            [0, 0, 1]
+        ])
+        A = np.linalg.inv(A1.dot(A2).dot(A3))
 
     tmp = np.zeros(shape=t.shape)
 
     for i in range(tmp.shape[0]):
         for j in range(tmp.shape[1]):
             tmp[i, j] = A.dot(t[i, j]) + np.array([0, 0, 0])
-
+            if (shift is not None):
+                tmp[i, j] = A.dot(t[i, j]) + shift
     return tmp
 
 
