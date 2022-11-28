@@ -139,21 +139,27 @@ def calculateFuncWithSolution(t1, t2, axis, solution=[0, 0, 0]):
 
     # Массив для поиска коэффициента знаменателя в уравнении (4)
     if (axis==0):
-        xspace = np.linspace(-1, 0, 21)
-        xspace1 = np.linspace(0, 1, 21)
+        xspace = np.linspace(-1, 0, 51)
+        xspace1 = np.linspace(0, 1, 51)
         xspace = np.concatenate((xspace, xspace1))
+        xspace = np.append(xspace, solution[0])
+        xspace.sort()
         yspace = [solution[1]]
         phispace = [solution[2]]
     elif(axis==1):
-        yspace = np.linspace(-1, 0, 21)
-        yspace1 = np.linspace(0, 1, 21)
+        yspace = np.linspace(-1, 0, 51)
+        yspace1 = np.linspace(0, 1, 51)
         yspace = np.concatenate((yspace, yspace1))
+        yspace = np.append(yspace, solution[1])
+        yspace.sort()
         xspace = [solution[0]]
         phispace = [solution[2]]
     else:
-        phispace = np.linspace(np.deg2rad(-10), 0, 21)
-        phispace1 = np.linspace(0, np.deg2rad(10), 21)
+        phispace = np.linspace(np.deg2rad(-10), 0, 51)
+        phispace1 = np.linspace(0, np.deg2rad(10), 51)
         phispace = np.concatenate((phispace, phispace1))
+        phispace = np.append(phispace, np.deg2rad(solution[2]))
+        phispace.sort()
         yspace = [solution[1]]
         xspace = [solution[0]]
 
@@ -180,6 +186,7 @@ def calculateFuncWithSolution(t1, t2, axis, solution=[0, 0, 0]):
                         [d2 * np.sin(alfa2)]
                     ])
 
+
                     X1js = deltaX + A.dot(d2js)
 
 
@@ -188,7 +195,7 @@ def calculateFuncWithSolution(t1, t2, axis, solution=[0, 0, 0]):
                     d1 = 0
 
                     ind = np.argmin(np.abs(t1 - alfa1)[:, 1])
-                    if (np.abs(t1[ind, 1] - alfa1) < 0.01):
+                    if (np.abs(t1[ind, 1] - alfa1) < 0.1):
                         d1 = t1[ind, 0]
                         c += 1
 

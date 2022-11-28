@@ -31,7 +31,7 @@ Az2 = np.deg2rad(184)  # Угол азимута БЛА в первом поло
 Gamma2 = np.deg2rad(0)  # Угол крена БЛА в первом положении
 
 uaw1 = Uaw(0, 0, 4, Az=Az1, Beta=Beta, Theta=Theta1, ThetaDel=ThetaDel, Gamma=Gamma1)
-uaw2 = Uaw(0.5, -0.5, 4, Az=Az2, Beta=Beta, Theta=Theta2, ThetaDel=ThetaDel, Gamma=Gamma2)
+uaw2 = Uaw(1, 1, 4, Az=Az2, Beta=Beta, Theta=Theta2, ThetaDel=ThetaDel, Gamma=Gamma2)
 
 # t1 = calculateCloud(uaw1, walls)
 # t1_reversed = utils.reverse_points(t1, Theta1, Gamma1)
@@ -44,8 +44,8 @@ uaw2 = Uaw(0.5, -0.5, 4, Az=Az2, Beta=Beta, Theta=Theta2, ThetaDel=ThetaDel, Gam
 
 true_coords = [-0.5, 0.5, np.deg2rad(4)]
 
-points1 = np.load('for_errors/points1.npy', allow_pickle=True)
-points2 = np.load('for_errors/points2.npy', allow_pickle=True)
+points1 = np.load('for_errors/points1_2.npy', allow_pickle=True)
+points2 = np.load('for_errors/points2_2.npy', allow_pickle=True)
 
 zPoints1 = utils.select_z_points(points1, 0)
 dist1 = utils.get_distances(zPoints1, uaw=uaw1, mu=0, std=0)
@@ -56,9 +56,12 @@ bounds = optimize.Bounds([-1, -1, np.deg2rad(-10)], [1, 1, np.deg2rad(10)])
 
 for std in stds:
     zPoints2 = utils.select_z_points(points2, 0)
-    dist2 = utils.get_distances(zPoints2, uaw=uaw2, mu=0, std=std)
-    res = optimize.differential_evolution(calcFunc, bounds=bounds, args=(dist1, dist2), maxiter=1)
-    errors.append(res.x - true_coords)
+    for i in range(100):
+        err = np.zeros(shape=(100,3))
+        dist2 = utils.get_distances(zPoints2, uaw=uaw2, mu=0, std=std)
+        #res = optimize.differential_evolution(calcFunc, bounds=bounds, args=(dist1, dist2), maxiter=1)
+        res = optimize.fmin(calcFunc, x0=[0, 0, 0], args=(dist1, dist2))
+        err[i] = res.x - true_coords
 
 print(errors)
 

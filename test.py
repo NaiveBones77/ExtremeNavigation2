@@ -6,8 +6,8 @@ from utils import *
 from Navigation import *
 
 
-#d1 = np.load('distances1.npy', allow_pickle=True)
-#d2 = np.load('distances2.npy', allow_pickle=True)
+#d1 = np.load('points1_2.npy', allow_pickle=True)
+#d2 = np.load('points2_2.npy', allow_pickle=True)
 
 # x0_tr = [-0.1, 0.1, np.deg2rad(3)]
 # x0_cu = [-0.14227924,  0.04932335,  0.06777232]

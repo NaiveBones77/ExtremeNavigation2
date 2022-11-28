@@ -8,11 +8,14 @@ from Navigation import *
 axis = 2
 
 d1 = np.load('distances1.npy', allow_pickle=True)
-d2 = np.load('distances1.npy', allow_pickle=True)
+d2 = np.load('distances2.npy', allow_pickle=True)
 
-disp1 = calculateFuncWithSolution(d1, d2, axis=0, solution=[0, 0, 0])
-disp2 = calculateFuncWithSolution(d1, d2, axis=1, solution=[0, 0, 0])
-disp3 = calculateFuncWithSolution(d1, d2, axis=2, solution=[0, 0, 0])
+solution = [ 0.33278194, -0.16387786,  7.066981  ]
+solution_zero = [0, 0, 0]
+
+disp1 = calculateFuncWithSolution(d1, d2, axis=0, solution=solution_zero)
+disp2 = calculateFuncWithSolution(d1, d2, axis=1, solution=solution_zero)
+disp3 = calculateFuncWithSolution(d1, d2, axis=2, solution=solution_zero)
 
 #np.save('disp.npy', disp)
 
@@ -33,7 +36,7 @@ for elem in disp2:
     y2.append(elem[0][0])
 
 for elem in disp3:
-    x3.append(elem[1][2])
+    x3.append(np.rad2deg(elem[1][2]))
     y3.append(elem[0][0])
 
 fig = plt.figure()
@@ -51,7 +54,7 @@ ax1.spines['top'].set_color('none')
 ax1.xaxis.set_ticks_position('bottom')
 ax1.yaxis.set_ticks_position('left')
 
-plt.xlabel('x', loc='right')
+plt.xlabel(r'$\Delta$x, м', loc='right')
 plt.ylabel(r'$\Delta$D', loc='top', rotation='horizontal')
 
 ax1.plot(x1, y1, label=r'$\Delta$Y=0, $\Delta$$\varphi$=0')
@@ -73,7 +76,7 @@ ax2.spines['top'].set_color('none')
 ax2.xaxis.set_ticks_position('bottom')
 ax2.yaxis.set_ticks_position('left')
 
-plt.xlabel('y', loc='right')
+plt.xlabel(r'$\Delta$y, м', loc='right')
 plt.ylabel(r'$\Delta$D', loc='top', rotation='horizontal')
 ax2.plot(x2, y2, label=r'$\Delta$X=0, $\Delta$$\varphi$=0')
 ax2.grid()
@@ -93,7 +96,7 @@ ax3.spines['top'].set_color('none')
 ax3.xaxis.set_ticks_position('bottom')
 ax3.yaxis.set_ticks_position('left')
 ax3.plot(x3, y3, label=r'$\Delta$X=0, $\Delta$Y=0')
-plt.xlabel(r'$\varphi$', loc='right')
+plt.xlabel(r'$\Delta$$\varphi$, град', loc='right')
 plt.ylabel(r'$\Delta$D', loc='top', rotation='horizontal')
 ax3.grid()
 plt.legend()
